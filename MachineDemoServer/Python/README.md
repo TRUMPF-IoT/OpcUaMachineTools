@@ -31,6 +31,9 @@ With Python installed, the script file can be exuted with `python PythonMachineD
 - [Download and install Python](https://www.python.org/downloads/) >= Python 3.7
 - Install opcua-asnycio library >= 0.9.14 with 
 `pip3 install asyncua` or upgrade with `pip3 install --upgrade asyncua`
+Behind a company proxy you may need to add the proxy server and trust servers. Search for proxy settings and look for the manual proxy server.
+`pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org --proxy=https://username:password@proxyserver:port asyncua`
+
 - Download all files and copy them to a folder. Easiest way is to download all files of the github repository. [Download zip](https://github.com/TRUMPF-IoT/OpcUaMachineTools/archive/main.zip). 
 - Enter the folder containing PythonMachineDemoServer.py and execute the server with `python PythonMachineDemoServer.py`
 - On Linux if Python 2.x and Python 3.x are installed execute with `python3 PythonMachineDemoServer.py`. 
