@@ -40,6 +40,7 @@ Behind a company proxy you may need to add the proxy server and trust servers. S
 
 To create a self contained .exe on Windows which can be used on systems without Python installed:
 - Install PyInstaller with: `pip3 install pyinstaller`
+- Comment out line `os.chdir(sys.path[0])` in PythonMachineDemoServer.py. That can cause issues. 
 - Switch to folder and execute `pyinstaller.exe --onefile PythonMachineDemoServer.py`. The result is in the "dist" directory.
 
 ### Configuration
