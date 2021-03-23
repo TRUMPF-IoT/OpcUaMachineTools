@@ -10,10 +10,10 @@ Everything is provided as open source to provide examples on how to work and pro
 
 ### Examples
 
-##### Generate certificate - gen_certificate.py
+#### Generate certificate - gen_certificate.py
 Library used in all examples to create the certificate if not yet created.
 
-##### Show pending alarms - show_current_alarms.py
+#### Show pending alarms - show_current_alarms.py
 Example client to show the alarms and messages via OPC UA Alarms and Conditions.
 
 
