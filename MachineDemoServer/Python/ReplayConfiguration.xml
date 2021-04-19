@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration> 
-    <endpoint url="opc.tcp://localhost:50000"/>
+    <endpoint url="opc.tcp://0.0.0.0:50000"/>
     <execution sourceFileName="recordTruLaserCenter.json" playSpeedFactor="20"/>
 </configuration>   
