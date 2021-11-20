@@ -86,14 +86,20 @@ async def create_machine_subscription(client, nsIndex):
     unsubHandle = await sub.subscribe_alarms_and_conditions(subNode, tcMachineAlarmType) 
 
     # Call ConditionRefresh to get the current conditions with retain = true     
-    await conditionType.call_method("0:ConditionRefresh", ua.Variant(sub.subscription_id, ua.VariantType.UInt32))
+    try:
+        await conditionType.call_method("0:ConditionRefresh", ua.Variant(sub.subscription_id, ua.VariantType.UInt32))
+    except:
+        pass
 
 
 async def main():
-    try:
-        machineNamespace = "urn:X0REPLACE0X:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"       
-        serverUrl = "opc.tcp://myServer:11878"
-
+    try: 
+        # Use commented out namespace and url for usage with python machine demo server
+        # machineNamespace ="http://trumpf.com/TRUMPF-Interfaces/"  
+        # serverUrl = "opc.tcp://localhost:50000"
+        machineNamespace = "urn:X0REPLACE0X:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"
+        serverUrl = "opc.tcp://myServer:11878"    
+        
         # set runtime dir to directory of script file        
         os.chdir(sys.path[0])  
 
