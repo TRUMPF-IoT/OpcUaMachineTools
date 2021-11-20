@@ -44,6 +44,7 @@ class NodeTypeInfo:
         self.isSimpleDataType = None
         self.isArray = None
         self.dataTypeName = None
+        self.variantType = None
 
 
 def create_instance_of_complex_data_type_class(nodeTypeInfo, value):
@@ -58,14 +59,14 @@ def create_instance_of_complex_data_type_class(nodeTypeInfo, value):
             if isinstance(myType, type(Enum)): # Custom ENUM            
                 instance = value            
             else: # CLASS
-                # Attentention with NodeId types, 
+                # Attention with NodeId types, 
                 # Per default TwoByteNodeIds are created without NamespaceIndex -> Maybe needs to be corrected
                 instance = myType()                            
                 for name,value in value.items():        
                     if value is not None:
                         if name in _complexTypeNameMapping:
                             name = _complexTypeNameMapping[name]
-                        setattr(instance, name, value)  # set value   
+                        object.__setattr__(instance, name, value) # needed because of frozen dataclass                       
     except Exception as ex:
         print("ComplexDataTypeError:", nodeTypeInfo.dataTypeName, ex)    
     return instance
@@ -84,7 +85,8 @@ async def get_type_information(server, node):
         return _nodeIdToTypeInfoDict[node.nodeid]
     else:
         newTypeInfo = NodeTypeInfo()
-        newTypeInfo.isArray = (await node.read_value_rank()) > 0   
+        newTypeInfo.isArray = (await node.read_value_rank()) > 0  
+        newTypeInfo.variantType = await node.read_data_type_as_variant_type()
         nodeIdDT = await node.read_data_type()
         isNs0 = (nodeIdDT.NamespaceIndex == 0)  
         id = nodeIdDT.Identifier    
@@ -128,11 +130,11 @@ async def create_machine_alarm(evgen, nsIdx, entry):
             value = attribute["value"]  
             if value is not None:
                 typeInfo = _attributeNameToTypeInfoDict[name]
-                if typeInfo.isSimpleDataType:                    
-                    setattr(event, name, value)  # set value
+                if typeInfo.isSimpleDataType:                                       
+                    object.__setattr__(event, name, value) # needed because of frozen dataclass
                 else:
-                    complexValue = get_complex_value_instance_object(typeInfo, value) 
-                    setattr(event, name, complexValue) # set value
+                    complexValue = get_complex_value_instance_object(typeInfo, value)                  
+                    object.__setattr__(event, name, complexValue) # needed because of frozen dataclass
         event.NodeId = ua.StringNodeId(event.NodeId.Identifier) # transform to StringNodeId 
         event.EventType = ua.NodeId(event.EventType.Identifier, nsIdx) # set EventType correct Namespace
         return event.Time
@@ -144,18 +146,22 @@ async def prepare_for_machine_alarms(server, nsIdx):
     global _attributeNameToTypeInfoDict
     machineAlarmType = server.get_node(f"ns={nsIdx};i=1006")                
     # For ConditionId add NodeId property manually. Necessary till implemented in python asyncua library
-    await machineAlarmType.add_property(2, 'NodeId', ua.Variant(varianttype=ua.VariantType.NodeId))
+    await machineAlarmType.add_property(2, 'NodeId', ua.Variant(VariantType=ua.VariantType.NodeId))
     messagesNode = server.get_node(f"ns={nsIdx};s=179")                
     _attributeNameToTypeInfoDict = await create_attribute_name_to_type_info_dictionary(server, machineAlarmType)
     return await server.get_event_generator(machineAlarmType, messagesNode)
 
 
-async def init_all_variables_waiting_for_initial_data(topNode):
-    statusWaitingInitialData = ua.DataValue(status=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData)) 
+async def init_all_variables_waiting_for_initial_data(server, topNode):    
     nodeList = await ua_utils.get_node_children(topNode)
     for n in nodeList:
         nodeClass = await n.read_node_class()
-        if nodeClass == ua.NodeClass.Variable:              
+        if nodeClass == ua.NodeClass.Variable:                                              
+            # Hack to fulfill new type check in write_value
+            # Until fixed, no StatusCode can be set without a proper VariantType in the value           
+            nodeTypeInfo = await get_type_information(server, n)  
+            statusWaitingInitialData = ua.DataValue(StatusCode_=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))                
+            object.__setattr__(statusWaitingInitialData.Value, "VariantType", nodeTypeInfo.variantType)
             await n.write_value(statusWaitingInitialData)
 
 
@@ -181,12 +187,12 @@ async def main():
             ua.SecurityPolicyType.NoSecurity,
             ua.SecurityPolicyType.Basic256Sha256_SignAndEncrypt])   
     await server.import_xml("MachineNodeTree.xml")    
-    await server.load_type_definitions()    
+    await server.load_data_type_definitions()
     idx = await server.get_namespace_index("http://trumpf.com/TRUMPF-Interfaces/")
 
     # Prepare tree                                         
     machineNode = server.get_node(f"ns={idx};s=1")      
-    await init_all_variables_waiting_for_initial_data(machineNode) 
+    await init_all_variables_waiting_for_initial_data(server, machineNode) 
     evgen = await prepare_for_machine_alarms(server, idx)  
 
     # Load record json
@@ -199,6 +205,7 @@ async def main():
             counter = 0
             previousTimestamp = None
             currentTimestamp = None
+
             for entry in hdaJson:
                 try:
                     counter = counter + 1                    
@@ -223,18 +230,16 @@ async def main():
                         value = entry["value"]["value"]
                         isEmptyList = (type(value) is list) and (len(value) == 0)
                         if value is not None and not isEmptyList:
-                            nodeTypeInfo = await get_type_information(server, node)
-                            datavalue = ua.DataValue()
-                            if nodeTypeInfo.isSimpleDataType: 
-                                # DataValue as workaround to set ServerTimestamp
-                                # DataValue can be removed when library is auto setting ServerTimestamp
-                                datavalue = ua.DataValue(value)                                                
-                            else:
-                                complexValue = get_complex_value_instance_object(nodeTypeInfo, value)                              
-                                datavalue = ua.DataValue(complexValue)                                
-                            datavalue.SourceTimestamp = datetime.utcnow()
-                            datavalue.ServerTimestamp = datetime.utcnow()                                                          
-                            await node.write_value(datavalue) 
+                            nodeTypeInfo = await get_type_information(server, node)                           
+                            utcnow = datetime.utcnow()
+                            myValue = value
+                            if not nodeTypeInfo.isSimpleDataType:
+                                myValue = get_complex_value_instance_object(nodeTypeInfo, value)                                                            
+                            # DataValue as workaround to set ServerTimestamp, can be removed when implemented in library
+                            valueAsVariant = ua.Variant(myValue, VariantType=nodeTypeInfo.variantType)                                                   
+                            datavalue = ua.DataValue(valueAsVariant, SourceTimestamp=utcnow, ServerTimestamp=utcnow)  
+                            # VariantType needed because of new type check in write_value
+                            await node.write_value(datavalue, varianttype=nodeTypeInfo.variantType)                                                                             
                 except Exception as ex:
                     print("Unexpected error:", nodeId, ex)
             await asyncio.sleep(2) # And redo record file   
