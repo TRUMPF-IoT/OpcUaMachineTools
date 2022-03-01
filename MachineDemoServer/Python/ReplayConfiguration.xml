@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration> 
-    <endpoint url="opc.tcp://localhost:50000"/>
+    <!-- Writing localhost as 127.0.0.1 seems to be more robust in some cases  -->
+    <endpoint url="opc.tcp://127.0.0.1:50000"/>
     <execution sourceFileName="recordTruLaserCenter.json" playSpeedFactor="20"/>
 </configuration>   
