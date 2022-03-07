@@ -6,3 +6,4 @@ Examples and small programs regarding OPC UA on machine tools.
 
 ### Client examples
 * [Python examples](/Examples/Python)
+* [NetCore examples](/Examples/NetCore)
