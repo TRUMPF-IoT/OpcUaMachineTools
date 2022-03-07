@@ -30,7 +30,7 @@ import os, sys
 from asyncua.common import ua_utils
 from dateutil.parser import isoparse
 from datetime import timedelta, datetime
-from asyncua import ua, Server
+from asyncua import ua, Server, Node, uamethod
 from xml.dom import minidom
 from enum import Enum
 
@@ -164,6 +164,13 @@ async def init_all_variables_waiting_for_initial_data(server, topNode):
             object.__setattr__(statusWaitingInitialData.Value, "VariantType", nodeTypeInfo.variantType)
             await n.write_value(statusWaitingInitialData)
 
+@uamethod
+def condition_refresh(parent, sub_id):
+    None
+
+@uamethod
+def condition_refresh2(parent, sub_id, mid):
+    None
 
 async def main():
     # set runtime dir to directory of script file
@@ -186,6 +193,14 @@ async def main():
     server.set_security_policy([
             ua.SecurityPolicyType.NoSecurity,
             ua.SecurityPolicyType.Basic256Sha256_SignAndEncrypt])   
+
+    # mock condition refresh methods
+    isession = server.iserver.isession
+    condition_refresh_method = Node(isession, ua.NodeId(ua.ObjectIds.ConditionType_ConditionRefresh))
+    isession.add_method_callback(condition_refresh_method.nodeid, condition_refresh)
+    condition_refresh2_method = Node(isession, ua.NodeId(ua.ObjectIds.ConditionType_ConditionRefresh2))
+    isession.add_method_callback(condition_refresh2_method.nodeid, condition_refresh2)
+
     await server.import_xml("MachineNodeTree.xml")    
     await server.load_data_type_definitions()
     idx = await server.get_namespace_index("http://trumpf.com/TRUMPF-Interfaces/")
@@ -246,4 +261,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
