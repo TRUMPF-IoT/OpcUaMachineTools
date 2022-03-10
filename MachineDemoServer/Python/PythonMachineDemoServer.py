@@ -52,7 +52,7 @@ def create_instance_of_complex_data_type_class(nodeTypeInfo, value):
     instance = None
     try:        
         if nodeTypeInfo.dataTypeName in ["DateTime", "Time", "UtcTime", "TimeZoneDataType"]: # TIME
-            instance = isoparse(value)
+            instance = parse_time_string(value)
         else:            
             ua_module = importlib.import_module("asyncua.ua")
             myType = getattr(ua_module, nodeTypeInfo.dataTypeName)            
@@ -149,7 +149,8 @@ async def prepare_for_machine_alarms(server, nsIdx):
     await machineAlarmType.add_property(2, 'NodeId', ua.Variant(VariantType=ua.VariantType.NodeId))
     messagesNode = server.get_node(f"ns={nsIdx};s=179")                
     _attributeNameToTypeInfoDict = await create_attribute_name_to_type_info_dictionary(server, machineAlarmType)
-    return await server.get_event_generator(machineAlarmType, messagesNode)
+    evgen = await server.get_event_generator(machineAlarmType, messagesNode)
+    return evgen
 
 
 async def init_all_variables_waiting_for_initial_data(server, topNode):    
@@ -163,6 +164,14 @@ async def init_all_variables_waiting_for_initial_data(server, topNode):
             statusWaitingInitialData = ua.DataValue(StatusCode_=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))                
             object.__setattr__(statusWaitingInitialData.Value, "VariantType", nodeTypeInfo.variantType)
             await n.write_value(statusWaitingInitialData)
+
+def parse_time_string(timestring):
+    if (len(timestring) == 33):
+        # Remove last millisecond digit, does not work on linux isoparse
+        ts = timestring[:26] + timestring[27:]
+        return isoparse(ts)
+    else:
+        return isoparse(timestring)
 
 @uamethod
 def condition_refresh(parent, sub_id):
@@ -229,9 +238,9 @@ async def main():
                     isAlarm = (nodeId == "179")
                     timeDiff = timedelta(0)  
                     if isAlarm:
-                        currentTimestamp = await create_machine_alarm(evgen, idx, entry)   
+                        currentTimestamp = await create_machine_alarm(evgen, idx, entry)
                     else:
-                        currentTimestamp = isoparse(entry["value"]["serverTimestamp"])    
+                        currentTimestamp = parse_time_string(entry["value"]["serverTimestamp"])    
                     if previousTimestamp and currentTimestamp:    
                         timeDiff = currentTimestamp - previousTimestamp                  
                     previousTimestamp = currentTimestamp
