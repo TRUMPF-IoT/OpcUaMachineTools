@@ -38,4 +38,4 @@ To create a self contained .exe on Windows which can be used on systems without 
 
 
 ### License
-The Python Machine Demo Server is licensed under the MIT License.
+The Python OPC UA Clients are licensed under the MIT License.
