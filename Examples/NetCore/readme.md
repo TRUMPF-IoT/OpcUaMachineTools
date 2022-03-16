@@ -13,7 +13,7 @@ Everything is provided as open source to provide examples on how to work and pro
 
 The basic configuration for applications using the OPCFoundation .NetStandard SDK is done within the Config.xml file of the application. Here it is Opc.Ua.BasicClient.Config.xml. 
 
-The server endpoint is configured in Program.cs via the endpointURL. The default URL is the setting for the Trumpf Python Demo Server.
+The server endpoint is configured in Program.cs via the endpointURL. The default URL is the setting for the TRUMPF Python Demo Server.
 
 #### Certificate handling
 Getting some knowledge about certificate handling is necessary. Ignoring the topic will not lead to success.
@@ -30,12 +30,14 @@ Auto acceptance of server certificates can also be activated in the xml config. 
 
 ### Examples
 
-Run an example by uncommenting in Program.cs. The examples can be run in conjunction with the Trumpf Python Demo Server.
+Run an example by uncommenting in Program.cs. The examples can be run in conjunction with the TRUMPF Python Demo Server.
 
 **AlarmsExample**
+
 Shows how to consume Alarms and Conditions and how to determine the currently pending alarms.
 
 **ComplexTypeExample**
+
 Shows how to read items with complex data types using the complex type system.
 
 
