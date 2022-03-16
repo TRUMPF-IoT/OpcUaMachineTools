@@ -21,9 +21,11 @@ Getting some knowledge about certificate handling is necessary. Ignoring the top
 During a connection attempt client and server exchange certificates. A connection is only established if both sides  have accepted/trusted the certificates of each other.
 
 *How does the .NetStandard Client gets his client certificate?*
+
 -> If there is no self signed client certificate yet, a certificate is auto created during ```await application.CheckApplicationInstanceCertificate```. 
 
 *Where is the storage location of certificates?*
+
 -> The storage locations are defined in Opc.Ua.BasicClient.Config.xml. On Windows, X509Store and CurrentUser\My lead to the windows certificate store. The client certificate (ApplicationCertificate) can be viewed or deleted with the Windows Certificate Management Console (certmgr.msc). If there are issues, try to run the client with admin credentials or configure a different certificate store in the xml. 
 
 Auto acceptance of server certificates can also be activated in the xml config. Accepting a server certificate is done by moving the certificate into the trusted folder. Initially a server certificate is stored in the rejected folder.
