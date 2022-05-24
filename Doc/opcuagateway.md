@@ -27,4 +27,4 @@ If your vendor only supplies a configuration with the possibility to enter names
 ###### Example good configuration:
 ```ns="urn:X0REPLACE0X:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/";i=33```
 
-The only fixed and reserved namespace is the namespace for the URI ```http://opcfoundation.org/UA/```, it is index 0.
+The only fixed and reserved namespace is the namespace for the URI ```http://opcfoundation.org/UA/```, it's index is allways 0.
