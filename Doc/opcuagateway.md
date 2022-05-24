@@ -10,7 +10,7 @@ With the namespace index and the node identifiers, all items of the machine can 
 Just replace "X0REPLACE0X" with the ID of the machine.
 
 ##### Possible usages of the namespace URIs:
-- For example in the configuration of your OPC UA client software which items shall be subscribed. Configuration should allways contain the namespace URI and never the namespace index for a namespace URI.
+- For example in the configuration of your OPC UA client software which items shall be subscribed. Configuration should allways contain the namespace URI and never the namespace index.
 - In your programming SDK usually there is a method which returns the namespace index e.g. ```session.NamespaceUris.GetIndex(machineNamespace)``` or ```client.get_namespace_index(machineNamespace)```
 - Each OPC UA server has a standard node "NamespaceArray". That node can be read to get the list of all namespace URIs with their corresponding index. It can allways be accessed via namespace index 0 and integer identifier 2255.
 
