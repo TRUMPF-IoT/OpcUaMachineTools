@@ -19,7 +19,7 @@ After connecting to any OPC UA server the first step is to resolve the desired n
 
 Therefore configuration files must never contain namespace indices. They must contain the namespace URIs. For example if there is a configuration file for subscriptions, each node must be referenced via a combination of namespace URI and identifier.
 
-If your vendor only provides a configuration with the possibility to enter namespace indices instead of namespace URIs, please tell him to correct his mistake.
+If your vendor only allows to configure namespace indices and not namespace URIs, please tell them to allow URIs.
 
 ###### Example bad configuration:
 ```ns=5;i=33```
