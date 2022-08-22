@@ -153,16 +153,12 @@ async def prepare_for_machine_alarms(server, nsIdx):
     return evgen
 
 
-async def init_all_variables_waiting_for_initial_data(server, topNode):    
+async def init_all_variables_waiting_for_initial_data(server, topNode):
+    statusWaitingInitialData = ua.DataValue(StatusCode_=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))
     nodeList = await ua_utils.get_node_children(topNode)
     for n in nodeList:
         nodeClass = await n.read_node_class()
-        if nodeClass == ua.NodeClass.Variable:                                              
-            # Hack to fulfill new type check in write_value
-            # Until fixed, no StatusCode can be set without a proper VariantType in the value           
-            nodeTypeInfo = await get_type_information(server, n)  
-            statusWaitingInitialData = ua.DataValue(StatusCode_=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))                
-            object.__setattr__(statusWaitingInitialData.Value, "VariantType", nodeTypeInfo.variantType)
+        if nodeClass == ua.NodeClass.Variable:              
             await n.write_value(statusWaitingInitialData)
 
 def parse_time_string(timestring):

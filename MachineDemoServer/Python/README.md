@@ -22,16 +22,16 @@ Alarms and Conditions can only be subscribed on the "Messages" node. The Conditi
 
 ### Requirements
 - Python >= Python 3.7
-- Python opcua-asyncio library >= 0.9.92
+- Python opcua-asyncio library >= 0.9.95
 
-Tested with 0.9.92. If it will not run, use exactly that version and create an issue with error description and used library version.
+Tested with 0.9.95. If it will not run, use exactly that version and create an issue with error description and used library version.
 
 ### Installation and Execution
 With Python installed, the script file can be exuted with `python PythonMachineDemoServer.py`. As an alternative a fully self contained .exe can be created with PyInstaller.
 
 ##### Detailed instruction:
 - [Download and install Python](https://www.python.org/downloads/) >= Python 3.7. On installation set checkbox for adding to system path.
-- Install opcua-asnycio library >= 0.9.92 with 
+- Install opcua-asnycio library >= 0.9.95 with 
 `pip3 install asyncua` or upgrade with `pip3 install --upgrade asyncua`
 Behind a company proxy you may need to add the proxy server and trust servers. Search for proxy settings and look for the manual proxy server. 
 `pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org --proxy=http://username:password@proxyserver:port asyncua`
