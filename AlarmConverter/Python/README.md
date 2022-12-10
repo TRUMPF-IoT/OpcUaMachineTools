@@ -12,7 +12,7 @@ It is made as an example to be used with Trumpf machines, but might also be adap
 Feel free to use it, adapt it to your needs and contribute back to the open source project. There is no offical TRUMPF support for the OPC UA open source examples and applications.
 
 ##### View of converted alarms
-![Picture Alarms](doc/alarmConverter.png)
+![Picture Alarms](doc/alarmConverter.PNG)
 
 ### Quickstart
 Download python libraries 'asyncua' and 'aioconsole'. Adapt configuration in `machineconfiguration` and execute `alarm_converter.py`.
