@@ -3,9 +3,9 @@
 ### Introduction
 This is a complete example application which converts OPC UA Alarms and Conditions events to standard OPC UA data items. The application includes a client and a server. The client subscribes to the alarms and the server provides them as data items. It might be interesting if the used client application is not yet able to consume OPC UA events.
 
-The default configuration is for the [PythonMachineDemoServer](../../MachineDemoServer/Python/README.md).
+The default configuration is for the [PythonMachineDemoServer](../../MachineDemoServer/Python).
 
-A simple example on how to just consume alarms, can be found [here](../../Examples/Python/README.md).
+A simple example on how to just consume alarms, can be found [here](../../Examples/Python).
 
 It is made as an example to be used with Trumpf machines, but might also be adapted or tested with other OPC UA alarms and conditions servers.
 
