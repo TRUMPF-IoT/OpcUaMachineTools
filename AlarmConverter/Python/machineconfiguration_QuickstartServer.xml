@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- machineconfiguration_QuickstartServer.xml -->
+<configuration machinesServer="opc.tcp://localhost:62544/Quickstarts/AlarmConditionServer" 
+               isTrumpfServer="false" 
+               adapterEndpoint="opc.tcp://127.0.0.1:55555/freeopcua/alarmconverter/"               
+               traceLevel="standard"> 
+    <machine machineName="Machine1" ns="http://opcfoundation.org/Quickstarts/AlarmCondition" />
+</configuration>  
+

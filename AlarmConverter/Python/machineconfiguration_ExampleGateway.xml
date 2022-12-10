@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- machineconfiguration_ExampleGateway.xml -->
+<configuration machinesServer="opc.tcp://GatewayServer:11878" 
+               isTrumpfServer="true" 
+               adapterEndpoint="opc.tcp://127.0.0.1:55555/freeopcua/alarmconverter/"               
+               traceLevel="standard">
+    <machine machineName="machine1" ns="urn:AXXXXDYYYY:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"/> 
+    <machine machineName="machine2" ns="urn:AZZZZEKKKK:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"/>
+    <machine machineName="machine3" ns="urn:AYYYYEXXXX:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"/>
+	<machine machineName="machine4" ns="urn:AYXXXE00XX:TRUMPF:UAInterfaces/http://trumpf.com/TRUMPF-Interfaces/"/>
+</configuration>  

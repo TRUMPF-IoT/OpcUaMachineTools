@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- machineconfiguration_PythonMachineDemoServer.xml -->
+<configuration machinesServer="opc.tcp://127.0.0.1:50000" 
+               isTrumpfServer="true" 
+               adapterEndpoint="opc.tcp://127.0.0.1:55555/freeopcua/alarmconverter/"               
+               traceLevel="standard"> 
+    <machine machineName="Machine1" ns="http://trumpf.com/TRUMPF-Interfaces/" />
+</configuration>  
+
