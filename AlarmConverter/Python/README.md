@@ -15,7 +15,7 @@ Feel free to use it, adapt it to your needs and contribute back to the open sour
 ![Picture Alarms](doc/alarmConverter.PNG)
 
 ### Quickstart
-Download python libraries 'asyncua' and 'aioconsole'. Adapt configuration in `machineconfiguration` and execute `alarm_converter.py`.
+Download python libraries 'asyncua' and 'aioconsole'. Adapt configuration in `machineconfiguration.xml` and execute `alarm_converter.py`.
 
 ### Requirements
 - Python >= Python 3.7
@@ -51,7 +51,8 @@ With Python installed, the script file can be exuted with `python alarm_converte
 ##### Detailed instruction:
 - [Download and install Python](https://www.python.org/downloads/) >= Python 3.7. On installation set checkbox for adding to system path.
 - Install opcua-asnycio library >= 1.0.1 and aioconsole library with 
-`pip3 install asyncua` or upgrade with `pip3 install --upgrade asyncua aioconsole`
+`pip3 install asyncua aioconsole` or upgrade with 
+`pip3 install --upgrade asyncua aioconsole`
 Behind a company proxy you may need to add the proxy server and trust servers. Search for proxy settings and look for the manual proxy server. 
 `pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org --proxy=http://username:password@proxyserver:port asyncua aioconsole`
 
