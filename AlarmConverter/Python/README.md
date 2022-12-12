@@ -84,9 +84,9 @@ For each machine on the trumpf OPC UA gateway add an machine entry.
 | ns  | Set the namespace of the machine |
 
 #### Provided example configurations
-- machineconfiguration.xlm              --> Configuration for PythonMachineDemoServer
+- machineconfiguration.xml              --> Configuration for PythonMachineDemoServer
 - machineconfiguration_ExampleGateway.xml  --> Configuration example for a Trumpf opc gateway.
-- machineconfiguration_QuickstartServer --> Configuration example for opc foundation [AlarmCondition quickstart sample](https://github.com/OPCFoundation/UA-.NETStandard-Samples).
+- machineconfiguration_QuickstartServer.xml --> Configuration example for opc foundation [AlarmCondition quickstart sample](https://github.com/OPCFoundation/UA-.NETStandard-Samples).
 
 
 ### OPC UA Client for testing
