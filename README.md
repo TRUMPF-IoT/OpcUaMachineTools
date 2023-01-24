@@ -8,6 +8,7 @@ Examples, small programs and how-tos regarding OPC UA on machine tools.
 ### Client examples
 * [Python examples](/Examples/Python)
 * [NetCore examples](/Examples/NetCore)
+* [NodeRed examples](/Examples/NodeRed)
 
 ### How-tos
 * [How to connect to different machines via the OPC UA Gateway](/Doc/opcuagateway.md)

@@ -1,0 +1,216 @@
+[
+    {
+        "id": "8485f7b58648aa20",
+        "type": "tab",
+        "label": "Resolve Namespace",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8c33f06834d0cd18",
+        "type": "OpcUa-Client",
+        "z": "8485f7b58648aa20",
+        "endpoint": "7d33b075c39d4b68",
+        "action": "read",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "Read Namespaces",
+        "x": 550,
+        "y": 140,
+        "wires": [
+            [
+                "a8f059ecd98a5527"
+            ]
+        ]
+    },
+    {
+        "id": "3aa3f1b49ee566d2",
+        "type": "OpcUa-Item",
+        "z": "8485f7b58648aa20",
+        "item": "i=2255",
+        "datatype": "String Array",
+        "value": "",
+        "name": "NameSpaces Item",
+        "x": 330,
+        "y": 140,
+        "wires": [
+            [
+                "8c33f06834d0cd18"
+            ]
+        ]
+    },
+    {
+        "id": "5a04775cd61cf6ef",
+        "type": "inject",
+        "z": "8485f7b58648aa20",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 140,
+        "wires": [
+            [
+                "3aa3f1b49ee566d2"
+            ]
+        ]
+    },
+    {
+        "id": "6bdb24ecce34bd30",
+        "type": "debug",
+        "z": "8485f7b58648aa20",
+        "name": "debug ns",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a8f059ecd98a5527",
+        "type": "function",
+        "z": "8485f7b58648aa20",
+        "name": "store namespaces",
+        "func": "var nsUris = {};\nfor (var i = 0; i < msg.payload.length; i++) {\n    nsUris[msg.payload[i]] = i;\n}\n\nflow.set(\"nsUris\", nsUris);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 140,
+        "wires": [
+            [
+                "6bdb24ecce34bd30"
+            ]
+        ]
+    },
+    {
+        "id": "8332acd79782f8cb",
+        "type": "comment",
+        "z": "8485f7b58648aa20",
+        "name": "example: ns= http://trumpf.com/TRUMPF-Interfaces/",
+        "info": "",
+        "x": 250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "fd1ba67d7d4dcc7b",
+        "type": "complete",
+        "z": "8485f7b58648aa20",
+        "name": "Store NS complete",
+        "scope": [
+            "a8f059ecd98a5527"
+        ],
+        "uncaught": false,
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "4f5e2d95740f6dad"
+            ]
+        ]
+    },
+    {
+        "id": "4f5e2d95740f6dad",
+        "type": "function",
+        "z": "8485f7b58648aa20",
+        "name": "Item Definition",
+        "func": "var ns = \"http://trumpf.com/TRUMPF-Interfaces/\";\nvar nsPrefix = \"ns=\" + flow.get(\"nsUris\")[ns] + \";\";\n\nvar newMsg = {}\nnewMsg.topic = nsPrefix + \"s=33\"; // Item Node\nnode.status({ text: newMsg.topic });\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 300,
+        "wires": [
+            [
+                "cc4f6240f22da4df"
+            ]
+        ]
+    },
+    {
+        "id": "cc4f6240f22da4df",
+        "type": "OpcUa-Client",
+        "z": "8485f7b58648aa20",
+        "endpoint": "7d33b075c39d4b68",
+        "action": "read",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 620,
+        "y": 300,
+        "wires": [
+            [
+                "6dd3b89ce06256d2"
+            ]
+        ]
+    },
+    {
+        "id": "6dd3b89ce06256d2",
+        "type": "debug",
+        "z": "8485f7b58648aa20",
+        "name": "debug read item",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7d33b075c39d4b68",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://127.0.0.1:50000",
+        "secpol": "None",
+        "secmode": "None",
+        "none": true,
+        "login": false,
+        "usercert": false,
+        "usercertificate": "",
+        "userprivatekey": ""
+    }
+]

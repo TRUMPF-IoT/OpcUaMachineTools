@@ -6,6 +6,7 @@ Everything is provided as open source to provide examples on how to work and pro
 
 ### Requirements
 * Python >= Python 3.7
+    * Version >= Python 3.11 is recommended due to startup performance improvements.
 * Python opcua-asyncio library >= 0.9.14
 
 ### Examples

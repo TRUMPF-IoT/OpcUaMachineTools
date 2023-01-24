@@ -22,6 +22,7 @@ Alarms and Conditions can only be subscribed on the "Messages" node. The Conditi
 
 ### Requirements
 - Python >= Python 3.7
+    - Version >= Python 3.11 is recommended due to startup performance improvements.
 - Python opcua-asyncio library >= 0.9.95
 
 Tested with 0.9.95. If it will not run, use exactly that version and create an issue with error description and used library version.
