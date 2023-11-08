@@ -91,7 +91,7 @@ namespace TrumpfNetCoreClientExamples
             eventFilter.AddSelectClause(ObjectTypeIds.ConditionType, "Retain", Attributes.Value);
             eventFilter.AddSelectClause(ObjectTypeIds.AlarmConditionType, "0:ActiveState/Id", Attributes.Value);
             eventFilter.AddSelectClause(ObjectTypeIds.ConditionType, string.Empty, Attributes.NodeId); // ConditionId
-            eventFilter.AddSelectClause(mTcMachineAlarmTypeId, $"{myCustomNamespaceIndex}:AlarmIdentifier", Attributes.NodeId);
+            eventFilter.AddSelectClause(mTcMachineAlarmTypeId, $"{myCustomNamespaceIndex}:AlarmIdentifier", Attributes.Value);
 
             // Where Clause -> Only deliver events of the specified type
             ContentFilter whereClause = new ContentFilter();
