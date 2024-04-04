@@ -13,3 +13,6 @@ Examples, small programs and how-tos regarding OPC UA on machine tools.
 ### How-tos
 * [How to connect to different machines via the OPC UA Gateway](/Doc/opcuagateway.md)
 * [How to determine the connection state of a machine aggregated in the OPC UA gateway](/Doc/connectionstate.md)
+
+### Guidelines and best practices
+* [General guidelines and remarks](/Doc/guidelines.md)
