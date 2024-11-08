@@ -16,3 +16,5 @@ Examples, small programs and how-tos regarding OPC UA on machine tools.
 
 ### Guidelines and best practices
 * [General guidelines and remarks](/Doc/guidelines.md)
+* [Recommendations for usage of OPC UA clients](/Doc/opcuaclients.md)
+* [Signal recommendations for different use cases](/Doc/signalsusecases.md)
