@@ -7,7 +7,7 @@
 | ------------- | ------------| --------------------- | ------------- |
 | `ID 4 [Running]` | Indicates that the production plan on the machine is active. | Production Status Interface V3.0 | DATA ITEM |
 | `ID 32 [Name]` | Current active program name. | Production Status Interface V2.0 | DATA ITEM |
-| `ID 33 [FeedrateOverride]` | Indicates that the production plan on the machine is active. | Production Status Interface V3.0 | DATA ITEM |
+| `ID 33 [FeedrateOverride]` | Indicates that the production plan on the machine is active. | Production Status Interface V2.0 | DATA ITEM |
 | `ID 35.Running` | Basic program state. All Boolean. Active state is True. | Production Status Interface V2.0 | DATA ITEM |
 | `ID 35.Stopped` | |  | |
 | `ID 35.Aborted` | |  | |
