@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fmc="http://www.trumpf.com/xmlns/cadcam/FMC-1.0" targetNamespace="http://www.trumpf.com/xmlns/cadcam/FMC-1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Jobs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Job" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:choice>
+							<xs:element name="DeviceOrderChain" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="DeviceOrder" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:all>
+													<xs:element name="Description" type="xs:string"/>
+													<xs:element name="Comment" type="xs:string"/>
+													<xs:element name="Store" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Process" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Group" maxOccurs="unbounded">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="Data" maxOccurs="unbounded">
+																							<xs:complexType>
+																								<xs:sequence/>
+																								<xs:attribute name="Sequence" type="xs:int"/>
+																								<xs:attribute name="Quantity" type="xs:int"/>
+																								<xs:attribute name="RequestType" type="fmc:RequestType"/>
+																								<xs:attribute name="RequestValue" type="xs:string"/>
+																								<xs:attribute name="RequestValue2" type="xs:string"/>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute name="LocationTypePropertyGroup" type="xs:integer"/>
+																					<xs:attribute name="OneLocationTypePropertyGroupRequired" type="xs:boolean"/>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="LocationTypeProperty" type="fmc:LocationTypeProperty"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="SortMaster" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="SortData">
+																	<xs:complexType>
+																		<xs:sequence/>
+																		<xs:attribute name="SortMode" type="xs:int"/>
+																		<xs:attribute name="CleanPallet" type="xs:int" use="optional"/>
+																		<xs:attribute name="RetryCount" type="xs:int"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="OrderSettings" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="OrderData">
+																	<xs:complexType>
+																		<xs:sequence/>
+																		<xs:attribute name="SortingEnabled" type="xs:boolean" use="optional"/>
+																		<xs:attribute name="CleanPalletEnabled" type="xs:boolean" use="optional"/>
+																		<xs:attribute name="PalletChangerUseMode" type="fmc:PalletChangerUseMode" use="optional"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="PartOrderInformation" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="PartOrderData" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence/>
+																		<xs:attribute name="SequenceInPartInformation" type="xs:int"/>
+																		<xs:attribute name="CustomerOrder" type="xs:string"/>
+																		<xs:attribute name="Operation" type="xs:string"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:all>
+												<xs:attribute name="ProgName" type="xs:string" use="required"/>
+												<xs:attribute name="SequenceListId" type="xs:long" use="required"/>
+												<xs:attribute name="DesiredQuantity" type="xs:int" use="required"/>
+												<xs:attribute name="CurrentQuantity" type="xs:int" use="optional"/>
+												<xs:attribute name="State" type="fmc:OrderState" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Text" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ProductionOrder" maxOccurs="unbounded">
+									<xs:annotation>
+											<xs:documentation>Only for tube and 3d laser machines.</xs:documentation>
+										</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Name" type="xs:string" use="required">
+									</xs:attribute>
+									<xs:attribute name="OrderType" type="fmc:OrderType" use="optional">
+									</xs:attribute>
+									<xs:attribute name="OrderValueText" type="xs:string" use="required">
+									</xs:attribute>
+									<xs:attribute name="CurrentQuantity" type="xs:int" use="optional"/>
+									<xs:attribute name="DesiredQuantity" type="xs:int" use="required"/>
+									<xs:attribute name="MaxQuantity" type="xs:int" use="optional">
+									</xs:attribute>
+									<xs:attribute name="State" type="fmc:OrderState" use="optional"/>
+									<xs:attribute name="ContinuousMachining" type="xs:boolean">
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="JobName" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProgramGroups">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ProgramGroup" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ProgramGroupParts">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ProgramGroupPart" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence minOccurs="0">
+													<xs:element name="TubeNestData" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="XDisplacement" type="fmc:UnitValue"/>
+																<xs:element name="ARotation" type="fmc:UnitValue"/>
+																<xs:element name="XDisplacementItself" type="fmc:UnitValue"/>
+																<xs:element name="ARotationItself" type="fmc:UnitValue"/>
+															</xs:sequence>
+															<xs:attribute name="CutOff" type="xs:boolean" use="required"/>
+															<xs:attribute name="FirstCut" type="xs:boolean" use="required"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="OrderType" type="fmc:OrderType" use="optional"/>
+												<xs:attribute name="OrderValueText" type="xs:string" use="required">
+												</xs:attribute>
+												<xs:attribute name="Quantity" type="xs:int" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MachiningLength" type="fmc:UnitValue" minOccurs="0"/>
+							<xs:element name="DesiredTubeLength" type="fmc:UnitValue" minOccurs="0"/>
+						</xs:sequence>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Type" type="fmc:ProgramGroupType" use="required"/>
+						<xs:attribute name="StockEndPartType" type="fmc:StockEndPartType" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="UnitValue">
+		<xs:attribute name="value" type="xs:double" use="required"/>
+		<xs:attribute name="unit" type="fmc:Unit" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="RequestType">
+		<xs:annotation>
+			<xs:documentation source="Typ der Materialanforderung (z.B. aus dem Lager)"/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PEDESTAL"/>
+			<xs:enumeration value="PALLET_NUMBER"/>
+			<xs:enumeration value="PALLET_FROM_PREVIOUS_ORDER"/>
+			<xs:enumeration value="STOCK_NAME_ON_CARRIER_TYPE"/>
+			<xs:enumeration value="STOCK_NAME_ON_STOCK_NAME"/>
+			<xs:enumeration value="STOCK_GROUP_TYPE"/>
+			<xs:enumeration value="PALLET_AT_STATION"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LocationTypeProperty">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SUPPLY_LOCATION"/>
+			<xs:enumeration value="GRID_LOCATION"/>
+			<xs:enumeration value="MAXI_LOCATION"/>
+			<xs:enumeration value="EMERGENCY_LOCATION"/>
+			<xs:enumeration value="SMALL_PART_LOCATION"/>
+			<xs:enumeration value="MPX_LOCATION"/>
+			<xs:enumeration value="SPXL_LOCATION"/>
+			<xs:enumeration value="SCRAP_LOCATION"/>
+			<xs:enumeration value="REMAINING_SHEET_LOCATION"/>
+			<xs:enumeration value="RAKE_PART_LOCATION"/>
+			<xs:enumeration value="LAYER_LOCATION"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrderState">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ENABLED"/>
+			<xs:enumeration value="BLOCKED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrderType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PROGRAM"/>
+			<xs:enumeration value="PROGRAM_GROUP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProgramGroupType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Fixed">
+				<xs:annotation>
+					<xs:documentation>Obsolete: equal to Automatic</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Automatic">
+			</xs:enumeration>
+			<xs:enumeration value="Manual">
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StockEndPartType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NONE"/>
+			<xs:enumeration value="TWINLINE_OPTIMIZED"/>
+			<xs:enumeration value="NC_AXIS_POSITIONING"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Unit">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="mm"/>
+			<xs:enumeration value="cm"/>
+			<xs:enumeration value="µm"/>
+			<xs:enumeration value="m"/>
+			<xs:enumeration value="in"/>
+			<xs:enumeration value="inch"/>
+			<xs:enumeration value="ft"/>
+			<xs:enumeration value="°"/>
+			<xs:enumeration value="deg"/>
+			<xs:enumeration value="Grad"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TubeUnloadPosition">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PROGRAMMED_POSITION"/>
+			<xs:enumeration value="SCRAP"/>
+			<xs:enumeration value="POSITION_1"/>
+			<xs:enumeration value="POSITION_2"/>
+			<xs:enumeration value="POSITION_3"/>
+			<xs:enumeration value="POSITION_4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PalletChangerUseMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="A_AND_B"/>
+			<xs:enumeration value="ONLY_A"/>
+			<xs:enumeration value="ONLY_B"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
