@@ -35,7 +35,7 @@ MM,AT,1,  40,1,1,,'Programmname'                      ,,'',T
 MM,AT,1,  50,1,1,,'SollAnzahl'                        ,,'',Z
 MM,AT,1,  60,1,1,,'IstAnzahl'                         ,,'',Z
 C
-ZA,DA,1
+ZA,DA,2
 DA,'JOB43','JOB43_1','0','JOB43_1',1,0
 DA,'JOB47','JOB47_1','0','JOB47_1',4,0
 C
