@@ -2,7 +2,7 @@
 
 # MIT License
 
-# Copyright (c) 2021 TRUMPF Werkzeugmaschinen GmbH + Co. KG
+# Copyright (c) 2026 TRUMPF Werkzeugmaschinen GmbH + Co. KG
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,11 @@ import json
 import importlib
 import datetime
 import os, sys
+import asyncua
 from asyncua.common import ua_utils
+import dateutil
 from dateutil.parser import isoparse
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from asyncua import ua, Server, Node, uamethod
 from xml.dom import minidom
 from enum import Enum
@@ -37,7 +39,7 @@ from enum import Enum
 _nodeIdToTypeInfoDict = {}
 _attributeNameToTypeInfoDict = {}
 _complexTypeNameMapping = {"local":"Local", "text":"Text", "id":"Identifier", 
-                           "nodeId":"Identifier", "nsIdx":"NamespaceIndex"} 
+                           "nodeId":"Identifier", "nsIdx":"NamespaceIndex", "nsUrl":None} 
 
 class NodeTypeInfo:
     def __init__(self):
@@ -66,7 +68,8 @@ def create_instance_of_complex_data_type_class(nodeTypeInfo, value):
                     if value is not None:
                         if name in _complexTypeNameMapping:
                             name = _complexTypeNameMapping[name]
-                        object.__setattr__(instance, name, value) # needed because of frozen dataclass                       
+                        if name is not None: # Ignore if mapping is None
+                            object.__setattr__(instance, name, value) # needed because of frozen dataclass                       
     except Exception as ex:
         print("ComplexDataTypeError:", nodeTypeInfo.dataTypeName, ex)    
     return instance
@@ -154,7 +157,7 @@ async def prepare_for_machine_alarms(server, nsIdx):
 
 
 async def init_all_variables_waiting_for_initial_data(server, topNode):
-    statusWaitingInitialData = ua.DataValue(StatusCode_=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))
+    statusWaitingInitialData = ua.DataValue(StatusCode=ua.StatusCode(ua.StatusCodes.BadWaitingForInitialData))
     nodeList = await ua_utils.get_node_children(topNode)
     for n in nodeList:
         nodeClass = await n.read_node_class()
@@ -180,6 +183,10 @@ def condition_refresh2(parent, sub_id, mid):
 async def main():
     # set runtime dir to directory of script file
     os.chdir(sys.path[0]) 
+
+    print(f"Python:       {sys.version}")
+    print(f"asyncua:      {asyncua.__version__}")
+    print(f"python-dateutil: {dateutil.__version__}")
 
     # Read configuration XML Document
     doc = minidom.parse("ReplayConfiguration.xml")
@@ -251,7 +258,7 @@ async def main():
                         isEmptyList = (type(value) is list) and (len(value) == 0)
                         if value is not None and not isEmptyList:
                             nodeTypeInfo = await get_type_information(server, node)                           
-                            utcnow = datetime.utcnow()
+                            utcnow = datetime.now(timezone.utc)
                             myValue = value
                             if not nodeTypeInfo.isSimpleDataType:
                                 myValue = get_complex_value_instance_object(nodeTypeInfo, value)                                                            
@@ -260,6 +267,8 @@ async def main():
                             datavalue = ua.DataValue(valueAsVariant, SourceTimestamp=utcnow, ServerTimestamp=utcnow)  
                             # VariantType needed because of new type check in write_value
                             await node.write_value(datavalue, varianttype=nodeTypeInfo.variantType)                                                                             
+                except ua.uaerrors.BadNodeIdUnknown:
+                    print(f"Skipping unknown node: {nodeId} (not in address space)")
                 except Exception as ex:
                     print("Unexpected error:", nodeId, ex)
             await asyncio.sleep(2) # And redo record file   
