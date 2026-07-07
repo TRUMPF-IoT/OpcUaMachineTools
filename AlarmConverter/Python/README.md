@@ -18,8 +18,7 @@ Feel free to use it, adapt it to your needs and contribute back to the open sour
 Download python libraries 'asyncua' and 'aioconsole'. Adapt configuration in `machineconfiguration.xml` and execute `alarm_converter.py`.
 
 ### Requirements
-- Python >= Python 3.7
-    - Version >= Python 3.11 is recommended due to startup performance improvements.
+- Python >= Python 3.12    
 - Python opcua-asyncio library >= v1.0.1
 - Python aioconsole library
 
@@ -49,16 +48,15 @@ During execution of the alarm_converter there are console outputs and some conso
 With Python installed, the script file can be exuted with `python alarm_converter.py`. As an alternative a fully self contained .exe can be created with PyInstaller.
 
 ##### Detailed instruction:
-- [Download and install Python](https://www.python.org/downloads/) >= Python 3.7. On installation set checkbox for adding to system path.
-- Install opcua-asnycio library >= 1.0.1 and aioconsole library with 
-`pip3 install asyncua aioconsole` or upgrade with 
-`pip3 install --upgrade asyncua aioconsole`
+- [Download and install Python](https://www.python.org/downloads/)
+- Install opcua-asnycio library >= 1.0.1 and aioconsole library with
+`python -m pip install asyncua aioconsole` or upgrade with `python -m pip install  --upgrade asyncua aioconsole`
 Behind a company proxy you may need to add the proxy server and trust servers. Search for proxy settings and look for the manual proxy server. 
-`pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org --proxy=http://username:password@proxyserver:port asyncua aioconsole`
+`python -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --proxy=http://username:password@proxyserver:port asyncua aioconsole`
 
-- Get all files and copy them to a folder. Easiest way is to download all files of the github repository. [Download zip](https://github.com/TRUMPF-IoT/OpcUaMachineTools/archive/main.zip). Or use a git client.
-- Enter the folder containing alarm_converter.py and execute the server with `python alarm_converter.py`
-- On Linux if Python 2.x and Python 3.x are installed execute with `python3 alarm_converter.py`. 
+- Download all files and copy them to a folder. Easiest way is to download all files of the github repository. [Download zip](https://github.com/TRUMPF-IoT/OpcUaMachineTools/archive/main.zip). 
+- Enter the folder containing PythonMachineDemoServer.py and execute the server with `python alarm_converter.py`
+- On Linux if Python 2.x and Python 3.x are installed execute with `python3 alarm_converter.py`.
 
 
 ### Configuration
@@ -104,7 +102,7 @@ The Python Alarm Converter is licensed under the MIT License.
 ```
 MIT License
 
-Copyright (c) 2022 TRUMPF Werkzeugmaschinen SE + Co. KG
+Copyright (c) 2026 TRUMPF Werkzeugmaschinen SE + Co. KG
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
