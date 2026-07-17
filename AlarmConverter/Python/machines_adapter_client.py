@@ -60,25 +60,28 @@ class SubCallback:
             conditionId = event.NodeId.to_string()
             conditionKeys = self.pendingAlarms.keys()
             # A condition/alarm appears with Retain=True and disappears with Retain=False            
-            if event.Retain and not conditionId in conditionKeys:                 
-                if (len(self.freeAlarmSlots) > 0):                         
-                    # get first free slot of end of list
-                    slotNumber = self.freeAlarmSlots.pop()
-                    eventAsDict["slot"] = slotNumber
-                    self.pendingAlarms[conditionId] = eventAsDict
-                    self.logger.info("MachineName: %s, Alarm added: %s, Slot: %s", self.machineName, conditionId, slotNumber)    
-                    await self.server.update_alarm_values(self.machineName, slotNumber, eventAsDict)  
-                    await self.server.update_alarm_list(self.machineName, self.pendingAlarms)                
+            if event.Retain and not conditionId in conditionKeys:
+                # get first free slot of end of list, None if all slots are taken
+                slotNumber = self.freeAlarmSlots.pop() if len(self.freeAlarmSlots) > 0 else None
+                eventAsDict["slot"] = slotNumber
+                self.pendingAlarms[conditionId] = eventAsDict
+                if slotNumber is not None:
+                    self.logger.info("MachineName: %s, Alarm added: %s, Slot: %s", self.machineName, conditionId, slotNumber)
+                    await self.server.update_alarm_values(self.machineName, slotNumber, eventAsDict)
+                else:
+                    self.logger.warning("MachineName: %s, Alarm added: %s, all alarm slots taken - alarm appears only in AlarmList", self.machineName, conditionId)
+                await self.server.update_alarm_list(self.machineName, self.pendingAlarms)
             if not event.Retain and conditionId in conditionKeys:
                 slotNumber = self.pendingAlarms[conditionId]["slot"]
-                # return now free slot to list
-                self.freeAlarmSlots.append(slotNumber)
-                self.freeAlarmSlots.sort(reverse=True)
-                del self.pendingAlarms[conditionId] 
-                # reset to default values               
-                self.logger.info("MachineName: %s, Alarm removed: %s, Slot: %s", self.machineName, conditionId, slotNumber) 
-                await self.server.reset_alarm_values(self.machineName, slotNumber, eventAsDict)  
-                await self.server.update_alarm_list(self.machineName, self.pendingAlarms)           
+                del self.pendingAlarms[conditionId]
+                self.logger.info("MachineName: %s, Alarm removed: %s, Slot: %s", self.machineName, conditionId, slotNumber)
+                if slotNumber is not None:
+                    # return now free slot to list
+                    self.freeAlarmSlots.append(slotNumber)
+                    self.freeAlarmSlots.sort(reverse=True)
+                    # reset to default values
+                    await self.server.reset_alarm_values(self.machineName, slotNumber, eventAsDict)
+                await self.server.update_alarm_list(self.machineName, self.pendingAlarms)
             self.logger.info("MachineName: %s, Current conditions: %s", self.machineName, conditionKeys)    
 
 
@@ -92,9 +95,11 @@ class SubCallback:
         eventDict["severity"] = event.Severity
         eventDict["retain"] = event.Retain    
         if type(event.Message) is str:
-            eventDict["text"] = event.Message  # Trumpf server delivers type string           
+            eventDict["text"] = event.Message  # Trumpf server delivers type string
         elif type(event.Message) is ua.uatypes.LocalizedText:
             eventDict["text"] = event.Message.Text # Trumpf server with new alarm number system delivers LocalizedText Type
+        else:
+            eventDict["text"] = "" if event.Message is None else str(event.Message)
         return eventDict
 
 
@@ -153,21 +158,18 @@ class MachinesAdapterClient:
                 machine.sub = None
 
         
-    async def is_connected(self, namespace, nodeString):        
-        self.logger.info('is_connected namespace=%s, nodeString=%s:', namespace, nodeString) 
-        isConnected = False
+    async def is_connected(self, namespace, nodeString):
+        self.logger.info('is_connected namespace=%s, nodeString=%s:', namespace, nodeString)
         try:
             # Check if node is reachable
-            idx = await self.client.get_namespace_index(namespace)            
-            var = self.client.get_node(f"ns={idx};{nodeString}")          
+            idx = await self.client.get_namespace_index(namespace)
+            var = self.client.get_node(f"ns={idx};{nodeString}")
             val = await var.read_display_name()
-            if val is not None: 
-                isConnected = True
+            return val is not None
         except Exception as ex:
             # log only often in verbose mode (info)
-            self.logger.info('is not connected Info: %s', ex) 
-        finally:
-            return isConnected
+            self.logger.info('is not connected Info: %s', ex)
+            return False
 
 
     async def setup_security_and_certificates(self, applicationName):            

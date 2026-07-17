@@ -53,7 +53,7 @@ class SubscriptionCallback:
         eventDict["time"] = event.Time 
         eventDict["identifier"] = event.AlarmIdentifier
         eventDict["source"] = event.SourceName         
-        eventDict["type"] = event.SourceName
+        eventDict["type"] = event.EventType.to_string()
         eventDict["severity"] = event.Severity
         eventDict["retain"] = event.Retain    
         if type(event.Message) is str:

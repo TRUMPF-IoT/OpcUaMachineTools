@@ -74,9 +74,9 @@ def gen_certificates(privateKeyFullPath, certificateFullPath, hostname, applicat
         .public_key(key.public_key())
         .serial_number(serialNumber)
         # Start validity period from yesterday
-        .not_valid_before(datetime.datetime.today() - datetime.timedelta(days=1))
+        .not_valid_before(datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1))
         # Our certificate will be valid for 10 years
-        .not_valid_after(datetime.datetime.utcnow() + (datetime.timedelta(days=365)*10))
+        .not_valid_after(datetime.datetime.now(datetime.timezone.utc) + (datetime.timedelta(days=365)*10))
         # -------------------------------------------------------------------------------------------------
         # If an extension is marked as critical (critical True), it can not be ignored by an application.
         # The application must recognise and process the extension.

@@ -82,8 +82,9 @@ async def main():
         isTrumpfServer = doc.documentElement.getAttribute("isTrumpfServer") == "true"
         endpointUri = doc.documentElement.getAttribute("adapterEndpoint")
         adapterServer = AdapterServer(endpointUri, isTrumpfServer)
-        await adapterServer.initialize()    
-        asyncio.create_task(adapterServer.run())
+        await adapterServer.initialize()
+        # Keep task references, otherwise the tasks may be garbage collected mid-flight
+        serverTask = asyncio.create_task(adapterServer.run())
 
         # Add machines and start adapter 
         machines = doc.getElementsByTagName("machine")
@@ -92,7 +93,7 @@ async def main():
         logger.trace("Add Machines.")
         for m in machines:  
             await machinesAdapter.add_machine(m.getAttribute("machineName"), m.getAttribute("ns"))        
-        asyncio.create_task(machinesAdapter.run())
+        adapterTask = asyncio.create_task(machinesAdapter.run())
 
         # wait for everything is set up
         await asyncio.sleep(10) 
@@ -100,9 +101,11 @@ async def main():
         # here code stops until user types exit
         await interactive(machinesAdapter)
 
-        # exit        
+        # exit
         await machinesAdapter.stop()
         await adapterServer.stop()
+        # Surface exceptions of the background tasks (e.g. server start failed)
+        await asyncio.gather(serverTask, adapterTask)
 
     except Exception:
         logger.exception("Exception")

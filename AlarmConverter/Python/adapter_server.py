@@ -69,10 +69,13 @@ class AdapterServer:
         # starting!
         self.isRunning = True
         self.hasStopped = False
-        async with self.server:
-            self.logger.trace("Server started!")        
-            while self.isRunning: # Todo Variable to check if to stop              
-                await asyncio.sleep(1)
+        try:
+            async with self.server:
+                self.logger.trace("Server started!")
+                while self.isRunning: # Todo Variable to check if to stop
+                    await asyncio.sleep(1)
+        finally:
+            # Always set, otherwise stop() waits forever if the server start fails
             self.hasStopped = True
 
 
@@ -97,10 +100,10 @@ class AdapterServer:
                     await alarmNode.add_variable(ua.NodeId(f"{machineName}.{alarmId}.{key}", self.idx), key, v["default"], v["type"])
 
 
-    async def update_alarm_list(self, machineName, pendingAlarms):          
+    async def update_alarm_list(self, machineName, pendingAlarms):
         node = self.server.get_node(ua.NodeId(f"{machineName}.AlarmList", self.idx))
         identifiers = [x["identifier"] for x in pendingAlarms.values()]
-        await node.write_value(identifiers, ua.VariantType.String) 
+        await node.write_value(identifiers, ua.VariantType.String)
 
 
     async def update_alarm_values(self, machineName, slotNumber, eventAsDict):      
@@ -108,7 +111,7 @@ class AdapterServer:
         for key,v in ALARM_PARAMETERS.items():
             if not v["trumpfOnly"] or ( v["trumpfOnly"] and self.sourceIsTrumpf ):
                 node = self.server.get_node(ua.NodeId(f"{machineName}.{alarmId}.{key}", self.idx))
-                newValue = eventAsDict[v["eventKey"]]
+                newValue = eventAsDict.get(v["eventKey"], v["default"])
                 await node.write_value(newValue, v["type"]) 
 
 

@@ -252,16 +252,19 @@ def register_condition_refresh_mocks(server):
 @dataclass
 class ReplayConfig:
     endpointUrl: str
-    playSpeedFactor: int
+    playSpeedFactor: float
     sourceFileName: str
 
 
 def load_replay_configuration(path):
     doc = minidom.parse(path)
     execution = doc.getElementsByTagName("execution")[0]
+    playSpeedFactor = float(execution.getAttribute("playSpeedFactor"))
+    if playSpeedFactor <= 0:
+        raise ValueError(f"playSpeedFactor must be greater than 0, but is {playSpeedFactor}")
     return ReplayConfig(
         endpointUrl=doc.getElementsByTagName("endpoint")[0].getAttribute("url"),
-        playSpeedFactor=int(execution.getAttribute("playSpeedFactor")),
+        playSpeedFactor=playSpeedFactor,
         sourceFileName=execution.getAttribute("sourceFileName"))
 
 
@@ -329,6 +332,7 @@ async def run_replay_loop(server, idx, typeInfoCache, alarmReplayer, recording, 
         counter = 0
         previousTimestamp = None
         for entry in recording:
+            nodeId = None
             try:
                 counter = counter + 1
                 nodeId = entry["nodeId"]["id"]
